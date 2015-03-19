@@ -1,0 +1,16 @@
+moc_*
+ui_*
+*.pro.user.*
+*.pro.user
+*.pro.user.*
+*build-desktop*
+*build-mango*
+*.o
+Makefile
+Makefile.*
+_build
+_dist
+archives
+.metadata/
+.settings/
+/build*
