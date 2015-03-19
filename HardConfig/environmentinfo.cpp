@@ -6,7 +6,10 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
+#include <QProcessEnvironment>
 #include <QDebug>
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 
 #ifdef Q_OS_WIN
@@ -16,9 +19,8 @@
 #endif
 
 
-
-static const char DEFAULT_DIVIDER[] = "; ";
-static const int PING_TIMEOUT=500;
+#define DEFAULT_DIVIDER "; "
+#define PING_TIMEOUT 500
 
 QString EnvironmentInfo::loadOSInfo()
 {
@@ -62,11 +64,21 @@ return infoStr.arg("Linux");
 QString EnvironmentInfo::loadProceessorInfo()
 {
 #ifdef Q_OS_WIN
- return QString("Architecture:%1 \nNumber of Processors:%2 \nProcessor Identifier:%3").arg(getenv("PROCESSOR_ARCHITECTURE")).arg(getenv("NUMBER_OF_PROCESSORS")).arg(getenv("PROCESSOR_IDENTIFIER"));
+ return QString("Processor info: Architecture:%1 \nNumber of Processors:%2 \nProcessor Identifier:%3").arg(getenv("PROCESSOR_ARCHITECTURE")).arg(getenv("NUMBER_OF_PROCESSORS")).arg(getenv("PROCESSOR_IDENTIFIER"));
 #endif // Q_OS_WIN
 #ifdef Q_OS_LINUX
   QString("Architecture:%1").arg(getenv("MACHTYPE"));
 #endif
+}
+
+QString EnvironmentInfo::loadIPAddress()
+{
+    QString result("IP Address:\n ");
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost))
+             result.append(address.toString()).append("\n");
+    }
+    return result;
 }
 
 
@@ -99,6 +111,16 @@ QString EnvironmentInfo::loadMemoryInfo()
     p.close();
     return system_info;
 #endif
+}
+
+QString EnvironmentInfo::loadSet()
+{
+    QStringList strlst=QProcessEnvironment::systemEnvironment().toStringList();
+    QString result("System Environment\n");
+    for (int i=0;i<strlst.count();i++) {
+        result.append(strlst[i]).append("\n");
+    }
+    return result;
 }
 
 QString EnvironmentInfo::pingHost(const QString &host_address)
@@ -156,15 +178,16 @@ QString EnvironmentInfo::pingHost(const QString &host_address)
     if (host_address.isEmpty()) {
         return QString("Wrong host address %1").arg(host_address);
     }
-    arguments<<host_address<<"-n"<<"3";
+    arguments<<host_address<<"-n"<<"2";
     QProcess ping;
     ping.start("ping",arguments);
-    ping.waitForFinished(PING_TIMEOUT);
+    ping.waitForFinished();
     QString result;
     while(ping.canReadLine()) {
         QString line = ping.readLine();
         result.append(line);
     }
+    ping.kill();
     return result;
 
 }
@@ -219,3 +242,5 @@ QString EnvironmentInfo::processRequest(QString URLaddress)
         delete reply;
         return result;
 }
+
+
