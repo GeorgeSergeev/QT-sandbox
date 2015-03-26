@@ -5,13 +5,15 @@
 
 class EnvironmentInfo
 {
-public:   
+public:
     static QString loadOSInfo();
     static QString loadProceessorInfo();
-    static QString loadIPAddress();
     static QString loadMemoryInfo();
-    static QString loadSet();
-    static QString pingHost(const QString &host_address);
+    static QString loadSystemEnvironment();
+    static QString loadIPAddress();
+    static QString loadIPAsDigitSequence();
+    static QString loadAllIPAddresses();
+    static QString pingHost(const QString &hostAddress);
     static QString pingHostList(const QStringList &host_list);
     static QString processRequest(QString URLaddress);
 };
