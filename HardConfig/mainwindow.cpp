@@ -22,10 +22,10 @@ void MainWindow::addToTextEdit()
     ui->textEdit->append(EnvironmentInfo::loadOSInfo());
     ui->textEdit->append(EnvironmentInfo::loadProceessorInfo());
     ui->textEdit->append(EnvironmentInfo::loadMemoryInfo());
-    ui->textEdit->append(EnvironmentInfo::loadIPAddress());
-    ui->textEdit->append(EnvironmentInfo::loadSystemEnvironment());
+//    ui->textEdit->append(EnvironmentInfo::loadIPAddress());
+//    ui->textEdit->append(EnvironmentInfo::loadSystemEnvironment());
 
-//    ui->textEdit->append(EnvironmentInfo::pingHost("213.180.204.11"));
+      ui->textEdit->append(EnvironmentInfo::pingHost("213.180.204.11"));
 //    QStringList adrList;
 //    adrList<<"213.180.204.11"<<"217.69.139.200"<<"localhost";
 //    ui->textEdit->append(EnvironmentInfo::pingHostList(adrList));

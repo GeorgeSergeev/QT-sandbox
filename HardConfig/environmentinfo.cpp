@@ -257,7 +257,7 @@ QString EnvironmentInfo::loadSystemEnvironment()
 
 QString EnvironmentInfo::pingHost(const QString &hostAddress)
 {
-    QString result;
+    QString outStream;
     try
     {
         QString adr=hostAddress.trimmed();
@@ -276,15 +276,19 @@ QString EnvironmentInfo::pingHost(const QString &hostAddress)
         QProcess ping;
         ping.start("ping",arguments);
         ping.waitForFinished();
-        while(ping.canReadLine()) {
-            QString line = ping.readLine();
-            result.append(line);
-        }
+        QByteArray BA = ping.readAll();
+        QTextStream textStream ( &BA);
+        textStream.setCodec("IBM-866");
+        return textStream.readAll();
     }
     catch(...) {
         qDebug()<<"Error ping host "<<hostAddress;
     }
-    return result.toUtf8();
+    //QTextStream textStream (&outStream);
+    //textStream.setCodec("IBM-866");
+  //  QTextCodec *codec = QTextCodec::codecForName("IBM-866");
+  //  return codec->toUnicode(outStream.);
+    return outStream;
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef ENVIRONMENTINFO_H
 #define ENVIRONMENTINFO_H
 #include <QString>
-#include <QStringList>
 
 class OsInfo {
 private:
