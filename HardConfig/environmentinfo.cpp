@@ -76,8 +76,11 @@ qint8 OsInfo::getBitOs()
    #ifdef Q_OS_WIN
     #ifdef _WIN32
         QString path=getenv("PATH");
+        QSettings settings("HKEY_CURRENT_USER\\Software", QSettings::NativeFormat);
+        QStringList sections=settings.childGroups();
+        if (sections.contains("Wow6432Node")) return 64;
         if (path.contains("Program Files (x86)")) return 64;
-           return 32;
+        return 32;
     #endif
     #ifdef _WIN64
            return 64;
@@ -338,8 +341,6 @@ QString EnvironmentInfo::processRequest(QString &urlAddress)
 
     return result;
 }
-
-
 
 
 QString EnvironmentInfo::loadValueFromRegestry(const char* regPath, const char* regKey)
